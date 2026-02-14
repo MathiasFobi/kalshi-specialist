@@ -1,0 +1,22 @@
+{
+  "name": "kalshi-specialist",
+  "version": "1.0.0",
+  "description": "Kalshi Trading Specialist Agent Skill",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "vitest run",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [],
+  "author": "Koolie",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "axios": "^1.13.5",
+    "dotenv": "^17.3.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
+  }
+}
