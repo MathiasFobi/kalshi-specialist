@@ -4,6 +4,7 @@
  */
 import * as fs from 'fs';
 import * as path from 'path';
+import * as crypto from 'crypto';
 const PEM_HEADER_PATTERNS = [
     '-----BEGIN RSA PRIVATE KEY-----',
     '-----BEGIN PRIVATE KEY-----',
@@ -57,4 +58,53 @@ export function loadPrivateKey(keyPath) {
 export function isValidPEM(keyContent) {
     const trimmed = keyContent.trim();
     return PEM_HEADER_PATTERNS.some(pattern => trimmed.startsWith(pattern));
+}
+/**
+ * Sign a request for Kalshi V2 API
+ * Creates the required authentication headers using RSA-SHA256
+ *
+ * @param method - HTTP method (GET, POST, PUT, DELETE, etc.)
+ * @param path - The API path (e.g., /v0/portfolio/balance)
+ * @param privateKey - The PEM-encoded RSA private key
+ * @param keyId - The key ID (from the Kalshi dashboard key pair name)
+ * @param body - Optional request body (for POST/PUT requests)
+ * @returns Authentication headers object
+ */
+export function signRequest(method, path, privateKey, keyId, body) {
+    // Generate timestamp in seconds (UTC)
+    const timestamp = Math.floor(Date.now() / 1000).toString();
+    // Build the string to sign following Kalshi V2 spec
+    // Format: timestamp + method + path + body (body is empty string for GETs)
+    const bodyString = body ?? '';
+    const stringToSign = `${timestamp}${method.toUpperCase()}${path}${bodyString}`;
+    // Create RSA-SHA256 signature
+    const sign = crypto.createSign('RSA-SHA256');
+    sign.update(stringToSign);
+    sign.end();
+    const signature = sign.sign(privateKey, 'base64');
+    return {
+        'KALSHI-ACCESS-KEY': keyId,
+        'KALSHI-ACCESS-SIGNATURE': signature,
+        'KALSHI-ACCESS-TIMESTAMP': timestamp,
+    };
+}
+/**
+ * Get the current timestamp in seconds (UTC)
+ * Useful for testing or when exact timestamp control is needed
+ * @returns Current timestamp as string
+ */
+export function getTimestamp() {
+    return Math.floor(Date.now() / 1000).toString();
+}
+/**
+ * Create the string to sign for Kalshi V2 API
+ * @param timestamp - Timestamp in seconds
+ * @param method - HTTP method
+ * @param path - API path
+ * @param body - Request body (if any)
+ * @returns The string to sign
+ */
+export function createStringToSign(timestamp, method, path, body) {
+    const bodyString = body ?? '';
+    return `${timestamp}${method.toUpperCase()}${path}${bodyString}`;
 }

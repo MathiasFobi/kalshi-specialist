@@ -10,7 +10,13 @@
 - Import with `.js` extension for NodeNext compatibility
 - Use strict TypeScript settings
 - RSA private key at `kalshi_key.pem` for API auth
-- Auth utilities in `src/auth.ts` - loadPrivateKey() for key loading/validation
+- Auth utilities in `src/auth.ts`:
+  - loadPrivateKey() for key loading/validation
+  - signRequest() for V2 API request signing
+  - createStringToSign() for request string construction
+- Authentication: signRequest(method, path, privateKey, keyId, body?) returns KalshiAuthHeaders
+- String-to-sign format: timestamp + METHOD.toUpperCase() + path + body
+- Testing: Use vi.useFakeTimers() + vi.setSystemTime() for deterministic timestamps
 
 ## Completed Stories
 
@@ -34,5 +40,49 @@
   - PEM variations: RSA, generic PRIVATE KEY, EC formats
 - Notes: Tests are isolated using /tmp, clean up after themselves
 
+### [DONE] Story: Kalshi V2 Request Signing (signing-logic)
+- Commit: 6411d4d
+- Changes:
+  - Extended src/auth.ts with signRequest() function
+    - Generates KALSHI-ACCESS-KEY header from keyId
+    - Generates KALSHI-ACCESS-TIMESTAMP using current timestamp (seconds)
+    - Generates KALSHI-ACCESS-SIGNATURE using RSA-SHA256 signing
+    - Signs stringToSign = timestamp + method.toUpperCase() + path + body
+    - Adds KalshiAuthHeaders interface for typed header objects
+  - Added getTimestamp() helper for timestamp generation
+  - Added createStringToSign() helper for string construction (testable separately)
+- Tests: src/__tests__/auth.test.ts - 34 tests for signing logic covering
+  - GET requests (signature verification with public key)
+  - POST requests with body inclusion
+  - Different HTTP methods (GET, POST, PUT, DELETE)
+  - Method case normalization (lowercase becomes uppercase)
+  - Signature format validation (base64 encoding)
+  - createStringToSign helper function
+- Notes: Uses Node.js crypto module for RSA-SHA256 signing. Mock timestamps via vitest fake timers ensure reproducible tests.
+
+### [DONE] Story: Kalshi API Client (client-wrapper)
+- Commit: c25cfa4
+- Changes:
+  - Created src/client.ts with KalshiClient class
+    - Supports 'demo' and 'prod' environments via KalshiClientConfig
+    - Demo URL: https://demo-api.kalshi.com/v2
+    - Prod URL: https://trading-api.kalshi.com/v2
+    - Lazy-loads and caches private key (loadPrivateKey called only on first auth request)
+    - Automatic request signing via signRequest() for all authenticated methods
+    - HTTP methods: get(), post(), put(), delete()
+    - Convenience methods: getBalance(), getPositions()
+    - Unauthenticated method: getStatus()
+  - Query string params included in signing path for GET requests
+  - All auth headers included on authenticated requests
+- Tests: src/__tests__/client.test.ts - 22 tests covering
+  - Environment configuration (demo/prod URLs)
+  - getStatus() without authentication
+  - GET, POST, PUT, DELETE with mocked axios
+  - Query params included in signing path
+  - Auth headers present on all authenticated requests
+  - Lazy key loading (cached after first use)
+  - Convenience methods
+- Notes: Uses axios with RawAxiosRequestConfig for type compatibility. Tests mock both axios and auth modules.
+
 ## Current Status
-Auth key loader complete. Ready for next implementation story.
+API client complete. 4/9 stories done (remaining: 5). Ready for next story.
