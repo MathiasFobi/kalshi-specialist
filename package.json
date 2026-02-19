@@ -1,22 +1,30 @@
 {
   "name": "kalshi-specialist",
-  "version": "1.0.0",
-  "description": "Kalshi Trading Specialist Agent Skill",
+  "version": "2.0.0",
+  "description": "Kalshi Multi-Strategy Specialist - Sum-to-One, Junk Bond, and more",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "test": "vitest run",
     "build": "tsc",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "start": "node dist/main.js",
+    "scan": "node dist/main.js --once"
   },
-  "keywords": [],
+  "keywords": ["kalshi", "trading", "arbitrage", "prediction-markets"],
   "author": "Koolie",
   "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.0"
+  },
   "devDependencies": {
-    "@types/node": "^25.2.3",
-    "axios": "^1.13.5",
-    "dotenv": "^17.3.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.18"
+    "@types/node": "^20.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

@@ -1,0 +1,38 @@
+## Codebase Patterns
+
+### Project Structure
+- TypeScript project using Node 22 (ES2022 target, NodeNext modules)
+- Source files in `src/`, compiled output in `dist/`
+- Tests in `src/__tests__/*.test.ts` using Vitest
+- Dependencies: axios (HTTP client), vitest (testing), typescript
+
+### Conventions
+- Import with `.js` extension for NodeNext compatibility
+- Use strict TypeScript settings
+- RSA private key at `kalshi_key.pem` for API auth
+- Auth utilities in `src/auth.ts` - loadPrivateKey() for key loading/validation
+
+## Completed Stories
+
+### [DONE] Story: Initialize Project
+- Commit: d1da236
+- Changes: Added test file verifying axios, vitest, and TypeScript work correctly
+- Tests: src/__tests__/setup.test.ts - 3 tests verifying project setup
+- Notes: Project was already scaffolded with proper tsconfig.json, package.json, and SKILL.md
+
+### [DONE] Story: Private Key Loader (auth-key)
+- Commit: 58fc45b
+- Changes: 
+  - Created src/auth.ts with loadPrivateKey() function
+    - Validates file existence with descriptive error messages
+    - Validates PEM format (RSA, generic, EC key headers supported)
+    - Validates key is not truncated (minimum 50 characters)
+    - Includes isValidPEM() helper function for quick validation
+- Tests: src/__tests__/auth.test.ts - 19 tests covering
+  - Success: loading valid RSA/private keys
+  - Error handling: missing files, directories, invalid formats
+  - PEM variations: RSA, generic PRIVATE KEY, EC formats
+- Notes: Tests are isolated using /tmp, clean up after themselves
+
+## Current Status
+Auth key loader complete. Ready for next implementation story.
