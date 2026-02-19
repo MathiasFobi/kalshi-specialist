@@ -84,5 +84,40 @@
   - Convenience methods
 - Notes: Uses axios with RawAxiosRequestConfig for type compatibility. Tests mock both axios and auth modules.
 
+### [DONE] Story: Order Execution Tool (order-execution)
+- Commit: db83328
+- Changes:
+  - Created src/cli/execute_order.ts with order execution utility
+    - executeOrder() function places limit orders on Kalshi V2 /portfolio/orders endpoint
+    - Supports 'yes' and 'no' sides for buy/sell orders
+    - Validates order parameters (ticker, side, count, price in cents 1-99)
+    - Returns structured OrderResponse with orderId, status, side, ticker, count, price
+    - Custom OrderExecutionError with ticker context and error codes
+    - formatOrderResponse() for CLI output formatting with total cost calculation
+    - executeOrderCLI() convenience function with JSON output
+  - Error codes: BAD_REQUEST, AUTH_ERROR, FORBIDDEN, MARKET_NOT_FOUND, RATE_LIMIT, EXECUTION_ERROR
+- Tests: src/__tests__/execute_order.test.ts - 29 tests covering
+  - Success cases: buy/sell orders, various statuses (pending, filled, rejected)
+  - Validation errors: empty ticker, invalid side, invalid count, invalid price
+  - API error handling: 400, 401, 403, 404, 429, network errors
+  - formatOrderResponse output formatting with cost calculation
+- Notes: Follows the pattern from get_market_info.ts. Typecheck passes. 1 pre-existing test failure in strategies.test.ts (unrelated).
+
 ## Current Status
-API client complete. 4/9 stories done (remaining: 5). Ready for next story.
+API client, market lookup, and order execution complete. 6/9 stories done (remaining: 3).
+
+### [DONE] Story: Market Lookup Tool (market-lookup)
+- Commit: 1443f88
+- Changes:
+  - Created src/cli/get_market_info.ts with market lookup utility
+    - getMarketInfo() function queries Kalshi V2 /markets/{ticker} endpoint
+    - Returns structured MarketInfo with prices, volume, open interest
+    - Infers market category from title/ticker (politics, crypto, sports, weather, econ, mentions, other)
+    - Custom MarketLookupError with ticker context
+    - formatMarketInfo() for CLI output formatting
+    - getMarketInfoCLI() convenience function
+- Tests: src/__tests__/get_market_info.test.ts - 23 tests covering
+  - Success cases: valid market lookup, field mapping, category inference
+  - Error handling: empty ticker, 404, missing data, API errors
+  - formatMarketInfo output formatting
+- Notes: Follows the pattern from core/kalshi-client.ts with improved type safety
