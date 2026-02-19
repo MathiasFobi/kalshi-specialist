@@ -84,6 +84,25 @@
   - Convenience methods
 - Notes: Uses axios with RawAxiosRequestConfig for type compatibility. Tests mock both axios and auth modules.
 
+### [DONE] Story: Order Management (Cancel Order) - cancel-order
+- Commit: c9eb9c2
+- Changes:
+  - Created src/cli/cancel_order.ts with cancelOrder() function
+    - Uses Kalshi V2 /portfolio/orders/{order_id} DELETE endpoint
+    - Validates orderId is not empty/whitespace-only
+    - Returns structured CancelOrderResponse with orderId, status, message
+    - Custom CancelOrderError with orderId context and error codes
+    - Error codes: BAD_REQUEST, AUTH_ERROR, FORBIDDEN, ORDER_NOT_FOUND, ALREADY_CLOSED, RATE_LIMIT, CANCEL_ERROR
+    - Handles 409 Conflict for orders already filled/cancelled
+    - formatCancelOrderResponse() for CLI output formatting
+    - cancelOrderCLI() convenience function with JSON output
+- Tests: src/__tests__/cancel_order.test.ts - 21 tests covering
+  - Success cases: order cancellation with orderId, status handling
+  - Validation errors: empty order ID, whitespace-only order ID
+  - API error handling: 400, 401, 403, 404, 409, 429 status codes
+  - formatCancelOrderResponse output formatting
+- Notes: Follows same pattern as execute_order.ts with DELETE method
+
 ### [DONE] Story: Order Execution Tool (order-execution)
 - Commit: db83328
 - Changes:
