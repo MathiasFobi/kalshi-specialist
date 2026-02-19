@@ -82,6 +82,7 @@ export interface KalshiAuthHeaders {
   'KALSHI-ACCESS-KEY': string;
   'KALSHI-ACCESS-SIGNATURE': string;
   'KALSHI-ACCESS-TIMESTAMP': string;
+  [key: string]: string;
 }
 
 /**
