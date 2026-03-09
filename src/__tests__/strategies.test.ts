@@ -27,7 +27,7 @@ describe('Sum-to-One Strategy', () => {
     const opportunities = strategy.findOpportunities(markets);
     
     expect(opportunities.length).toBe(1);
-    expect(opportunities[0].sum).toBe(0.93);  // 45¢ + 48¢ = 93¢
+    expect(opportunities[0].sum).toBeCloseTo(0.93, 2);  // 45¢ + 48¢ = 93¢
     expect(opportunities[0].potentialProfit).toBeGreaterThan(0);
   });
   
