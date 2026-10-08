@@ -6,6 +6,7 @@
 // Strategies
 export { SumToOneStrategy, SumToOneOpportunity, SumToOneConfig } from './strategies/sum-to-one.js';
 export { JunkBondStrategy, JunkBondOpportunity, JunkBondConfig } from './strategies/junk-bond.js';
+export { BTCStrategy, MarketSignal, TradeResult as BTCTradeResult, StrategyConfig, DEFAULT_CONFIG, runBTCStrategy } from './strategies/btc-trend.js';
 
 // Core
 export { MarketScout, ScoutResults, ScoutConfig } from './core/scout.js';

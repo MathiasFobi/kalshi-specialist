@@ -64,35 +64,24 @@ export async function getMarketInfo(client, ticker) {
 function inferCategory(title, ticker) {
     const titleLower = (title || '').toLowerCase();
     const tickerLower = (ticker || '').toLowerCase();
-    console.log(`DEBUG inferCategory: title="${title}" ticker="${ticker}"`);
-    console.log(`DEBUG titleLower="${titleLower}" tickerLower="${tickerLower}"`);
-    console.log(`DEBUG includes('trump') in titleLower:`, titleLower.includes('trump'));
-    console.log(`DEBUG includes('trump') in tickerLower:`, tickerLower.includes('trump'));
     if (titleLower.includes('mention') || tickerLower.includes('mention')) {
-        console.log('DEBUG: matched mentions');
         return 'mentions';
     }
     if (titleLower.includes('weather') || tickerLower.includes('weather')) {
-        console.log('DEBUG: matched weather');
         return 'weather';
     }
-    if (titleLower.includes('crypto') || tickerLower.includes('btc') || tickerLower.includes('eth') || tickerLower.includes('bitcoin')) {
-        console.log('DEBUG: matched crypto');
+    if (titleLower.includes('crypto') || titleLower.includes('btc') || titleLower.includes('eth') || titleLower.includes('bitcoin')) {
         return 'crypto';
     }
-    if (titleLower.includes('econom') || tickerLower.includes('econ') || tickerLower.includes('fed') || tickerLower.includes('cpi')) {
-        console.log('DEBUG: matched econ');
+    if (titleLower.includes('econom') || titleLower.includes('econ') || titleLower.includes('fed') || titleLower.includes('cpi')) {
         return 'econ';
     }
-    if (titleLower.includes('sport') || tickerLower.includes('sport') || tickerLower.includes('nba') || tickerLower.includes('nfl')) {
-        console.log('DEBUG: matched sports');
+    if (titleLower.includes('sport') || titleLower.includes('nba') || titleLower.includes('nfl')) {
         return 'sports';
     }
-    if (titleLower.includes('politic') || tickerLower.includes('trump') || tickerLower.includes('biden')) {
-        console.log('DEBUG: matched politics');
+    if (titleLower.includes('politic') || titleLower.includes('trump') || titleLower.includes('biden')) {
         return 'politics';
     }
-    console.log('DEBUG: no match, returning other');
     return 'other';
 }
 /**
